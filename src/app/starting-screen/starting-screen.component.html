@@ -1,8 +1,18 @@
 <div class="starting-screen-wrapper">
+  
   <div class="textured-text">
     <h1>
-      I have <span class="highlighted-text">passion</span> for creating
+      A story about a<span class="highlighted-text">
+        <ng-container *ngFor="let letter of highlightedText; let i = index">
+          <span class="bobbing" [style.animationDelay]="(i * 0.1) + 's'"
+          >
+            {{ letter === ' ' ? '\u00A0' : letter }}
+          </span>
+        </ng-container>
+      </span>Avocado
     </h1>
   </div>
-  <div class="diagonal-line"></div>
+  <div class="diagonal-line-left"></div>
+  <div class="diagonal-line-right"></div>
+  <div class="bckg-gradient"></div>
 </div>

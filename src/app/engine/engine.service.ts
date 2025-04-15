@@ -8,7 +8,8 @@ export class EngineService implements OnDestroy {
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
-  private light: THREE.AmbientLight;
+  private light: THREE.DirectionalLight;
+  private amb_light: THREE.DirectionalLight;
 
   private avocadoModel: THREE.Group<THREE.Object3DEventMap>;
 
@@ -53,9 +54,14 @@ export class EngineService implements OnDestroy {
     this.scene.add(this.camera);
 
     // soft white light
-    this.light = new THREE.AmbientLight(0x404040);
-    this.light.position.z = 10;
-    this.scene.add(this.light);
+    const amb_light = new THREE.AmbientLight(0x410445, 10);
+    amb_light.position.set(0, -2, -2);
+    this.scene.add(amb_light);
+
+    const light = new THREE.DirectionalLight(0xfffffff, 2);
+    light.position.set(0, 2, 2);
+    light.target.add(this.avocadoModel);
+    this.scene.add(light);
 
     this.loadAvocado();
   }
@@ -64,7 +70,7 @@ export class EngineService implements OnDestroy {
     const texture = new THREE.TextureLoader().load(
       'assets/textures/avocado.png'
     );
-    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const material = new THREE.MeshLambertMaterial({ map: texture });
     const loader = new GLTFLoader();
 
     loader.load(
@@ -91,6 +97,7 @@ export class EngineService implements OnDestroy {
   public animate(): void {
     // We have to run this outside angular zones,
     // because it could trigger heavy changeDetection cycles.
+
     this.ngZone.runOutsideAngular(() => {
       if (document.readyState !== 'loading') {
         this.render();

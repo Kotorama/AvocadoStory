@@ -15,7 +15,7 @@ app-game {
   height: 100%;
   margin: 0;
   padding: 0;
-}
+} 
 
 app-root {
   display: flex;
@@ -30,7 +30,7 @@ app-root {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 0;
+  z-index: 2;
 
   #renderCanvas {
     width: 100%;
