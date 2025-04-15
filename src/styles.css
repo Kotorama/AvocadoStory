@@ -1,1 +1,105 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body,
+app-root,
+app-game {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100vh;
+}
+
+.engine-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+
+  #renderCanvas {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  #renderCanvas:focus {
+    outline: none;
+  }
+}
+
+@font-face {
+  font-family: Kabisat;
+  src: url('assets/fonts/Kabisat\ Demo-ItalicTall.ttf') format("opentype");
+}
+
+h1 {
+  font-family: 'Kabisat';
+}
+
+.diagonal-line {
+  position: absolute;
+  bottom: 0;
+  right: 40%;
+  width: 200vh;
+  /* Adjust the width of the line */
+  height: 500px;
+  /* Adjust the height of the line */
+  z-index: -1;
+  filter: invert(1);
+
+  background: url('assets/textures/font-texture.avif');
+  /* Add your texture image here */
+  background-size: fit;
+  /* Ensure the texture is properly scaled */
+
+  /* Create a diagonal line effect by rotating the element */
+  transform: rotate(45deg);
+
+  /* Optional: Set a border radius to soften the edges if desired */
+  border-radius: 10px;
+}
+
+.textured-text {
+  width: 100%;
+  padding: 20px;
+  background: url('assets/textures/font-texture.avif') repeat center;
+  color: white;
+  margin-top: auto;
+  text-shadow: 3px 3px 0 #000,
+             -3px 3px 0 #000,
+             3px -3px 0 #000,
+             -3px -3px 0 #000,
+             0px 3px 0 #000,
+             0px -3px 0 #000,
+             -3px 0px 0 #000,
+             3px 0px 0 #000,
+             6px 6px 0 #000,
+             -6px 6px 0 #000,
+             6px -6px 0 #000,
+             -6px -6px 0 #000,
+             0px 6px 0 #000,
+             0px -6px 0 #000,
+             -6px 0px 0 #000,
+             6px 0px 0 #000,
+             3px 6px 0 #000,
+             -3px 6px 0 #000,
+             3px -6px 0 #000,
+             -3px -6px 0 #000,
+             6px 3px 0 #000,
+             -6px 3px 0 #000,
+             6px -3px 0 #000,
+             -6px -3px 0 #000;
+}
+
+.shit {
+  color: rgb(56, 39, 23);
+  font-size: larger;
+}

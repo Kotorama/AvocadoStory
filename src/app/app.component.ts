@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
+
+import { EngineComponent } from './engine/engine.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [EngineComponent],
 })
-export class AppComponent {
-  title = 'AvocadoStory';
-}
+export class AppComponent {}
