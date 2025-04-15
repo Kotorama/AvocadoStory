@@ -1,0 +1,66 @@
+h1 {
+  font-family: 'Kabisat';
+}
+
+.starting-screen-wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.diagonal-line {
+  position: absolute;
+  bottom: 0;
+  right: 40%;
+  width: 200vh;
+  height: 500px;
+  z-index: -1;
+  filter: invert(1);
+
+  background: url('/assets/textures/font-texture.avif');
+  background-size: fit;
+
+  transform: rotate(45deg);
+
+  border-radius: 10px;
+}
+
+.textured-text {
+  width: 100vw;
+  padding: 20px;
+  background: url('/assets/textures/font-texture.avif') repeat center;
+  color: var(--text-color);
+  text-shadow:
+      5px 5px 0 var(--text-shadow-color),
+      -5px 5px 0 var(--text-shadow-color),
+      5px -5px 0 var(--text-shadow-color),
+      -5px -5px 0 var(--text-shadow-color),
+      0px 5px 0 var(--text-shadow-color),
+      0px -5px 0 var(--text-shadow-color),
+      -5px 0px 0 var(--text-shadow-color),
+      5px 0px 0 var(--text-shadow-color),
+      8px 8px 0 var(--text-shadow-color),
+      -8px 8px 0 var(--text-shadow-color),
+      8px -8px 0 var(--text-shadow-color),
+      -8px -8px 0 var(--text-shadow-color),
+      0px 8px 0 var(--text-shadow-color),
+      0px -8px 0 var(--text-shadow-color),
+      -8px 0px 0 var(--text-shadow-color),
+      8px 0px 0 var(--text-shadow-color),
+      5px 8px 0 var(--text-shadow-color),
+      -5px 8px 0 var(--text-shadow-color),
+      5px -8px 0 var(--text-shadow-color),
+      -5px -8px 0 var(--text-shadow-color),
+      8px 5px 0 var(--text-shadow-color),
+      -8px 5px 0 var(--text-shadow-color),
+      8px -5px 0 var(--text-shadow-color),
+      -8px -5px 0 var(--text-shadow-color);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.highlighted-text {
+  color: var(--highlighted-color);
+  font-size: larger;
+}

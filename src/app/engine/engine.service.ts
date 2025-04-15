@@ -61,12 +61,14 @@ export class EngineService implements OnDestroy {
   }
 
   public loadAvocado() {
-    const texture = new THREE.TextureLoader().load('assets/avocado.png');
+    const texture = new THREE.TextureLoader().load(
+      'assets/textures/avocado.png'
+    );
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const loader = new GLTFLoader();
 
     loader.load(
-      'assets/avocado.glb',
+      'assets/models/avocado.glb',
       (gltf) => {
         const object = gltf.scene;
 
