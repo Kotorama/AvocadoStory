@@ -16,6 +16,10 @@ h1 {
   z-index: -2;
 }
 
+button {
+  z-index: 10;
+}
+
 .bobbing {
   display: inline-block;
   animation-name: bobbing;

@@ -1,6 +1,7 @@
 import { ElementRef, Injectable, NgZone, OnDestroy } from '@angular/core';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
+import { Model, ModelService } from '../model.service';
 
 @Injectable({ providedIn: 'root' })
 export class EngineService implements OnDestroy {
@@ -11,13 +12,20 @@ export class EngineService implements OnDestroy {
   private light: THREE.DirectionalLight;
   private amb_light: THREE.DirectionalLight;
 
-  private avocadoModel: THREE.Group<THREE.Object3DEventMap>;
+  private currentModelInstance: THREE.Group<THREE.Object3DEventMap>;
 
   private cube: THREE.Mesh;
 
   private frameId: number = null;
 
-  public constructor(private ngZone: NgZone) {}
+  public constructor(
+    private ngZone: NgZone,
+    private modelService: ModelService
+  ) {
+    this.modelService.model$.subscribe((model) => {
+      this.updateModels(model, this.currentModelInstance);
+    });
+  }
 
   public ngOnDestroy(): void {
     if (this.frameId != null) {
@@ -31,17 +39,15 @@ export class EngineService implements OnDestroy {
   }
 
   public createScene(canvas: ElementRef<HTMLCanvasElement>): void {
-    // The first step is to get the reference of the canvas element from our HTML document
     this.canvas = canvas.nativeElement;
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
-      alpha: true, // transparent background
-      antialias: true, // smooth edges
+      alpha: true,
+      antialias: true,
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // create the scene
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(
@@ -53,28 +59,25 @@ export class EngineService implements OnDestroy {
     this.camera.position.z = 2;
     this.scene.add(this.camera);
 
-    // soft white light
     const amb_light = new THREE.AmbientLight(0x410445, 10);
     amb_light.position.set(0, -2, -2);
     this.scene.add(amb_light);
 
     const light = new THREE.DirectionalLight(0xfffffff, 2);
     light.position.set(0, 2, 2);
-    light.target.add(this.avocadoModel);
+    light.target.add(this.currentModelInstance);
     this.scene.add(light);
-
-    this.loadAvocado();
   }
 
-  public loadAvocado() {
+  public loadModel(model: Model) {
     const texture = new THREE.TextureLoader().load(
-      'assets/textures/avocado.png'
+      `assets/textures/${model}.png`
     );
     const material = new THREE.MeshLambertMaterial({ map: texture });
     const loader = new GLTFLoader();
 
     loader.load(
-      'assets/models/avocado.glb',
+      `assets/models/${model}.glb`,
       (gltf) => {
         const object = gltf.scene;
 
@@ -85,7 +88,8 @@ export class EngineService implements OnDestroy {
           }
         });
 
-        this.avocadoModel = object;
+        object.position.set(0, 0, 0);
+        this.currentModelInstance = object;
         this.scene.add(object);
       },
       (onerror = (err) => {
@@ -94,10 +98,32 @@ export class EngineService implements OnDestroy {
     );
   }
 
-  public animate(): void {
-    // We have to run this outside angular zones,
-    // because it could trigger heavy changeDetection cycles.
+  public deleteModel(model: THREE.Group<THREE.Object3DEventMap>) {
+    model.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
 
+        mesh.geometry.dispose();
+
+        if (Array.isArray(mesh.material)) {
+          mesh.material.forEach((m) => m.dispose());
+        } else {
+          mesh.material.dispose();
+        }
+      }
+    });
+
+    this.scene.remove(model);
+  }
+
+  public updateModels(next: Model, prev?: THREE.Group<THREE.Object3DEventMap>) {
+    if (prev) {
+      this.deleteModel(prev);
+    }
+    this.loadModel(next);
+  }
+
+  public animate(): void {
     this.ngZone.runOutsideAngular(() => {
       if (document.readyState !== 'loading') {
         this.render();
@@ -118,8 +144,8 @@ export class EngineService implements OnDestroy {
       this.render();
     });
 
-    if (this.avocadoModel) {
-      this.avocadoModel.rotation.y += 0.01;
+    if (this.currentModelInstance) {
+      this.currentModelInstance.rotation.y += 0.01;
     }
     this.renderer.render(this.scene, this.camera);
   }
