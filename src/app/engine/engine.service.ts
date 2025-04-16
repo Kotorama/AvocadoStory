@@ -18,6 +18,7 @@ export class EngineService implements OnDestroy, AfterViewInit {
   private light: THREE.DirectionalLight;
   private amb_light: THREE.DirectionalLight;
   private controls: OrbitControls;
+  private loadVersion = 0;
 
   private currentModelInstance: THREE.Group<THREE.Object3DEventMap>;
 
@@ -30,7 +31,7 @@ export class EngineService implements OnDestroy, AfterViewInit {
     private modelService: ModelService
   ) {
     this.modelService.model$.subscribe((model) => {
-      this.updateModels(model, this.currentModelInstance);
+      this.loadModel(model);
     });
   }
 
@@ -96,6 +97,8 @@ export class EngineService implements OnDestroy, AfterViewInit {
   }
 
   public loadModel(model: Model) {
+    const currentVersion = ++this.loadVersion;
+
     const texture = new THREE.TextureLoader().load(
       `assets/textures/${model}.png`
     );
@@ -105,6 +108,8 @@ export class EngineService implements OnDestroy, AfterViewInit {
     loader.load(
       `assets/models/${model}.glb`,
       (gltf) => {
+        if (currentVersion !== this.loadVersion) return;
+
         const object = gltf.scene;
 
         object.traverse((child) => {
@@ -115,12 +120,18 @@ export class EngineService implements OnDestroy, AfterViewInit {
         });
 
         object.position.set(0, 0, 0);
+
+        if (this.currentModelInstance) {
+          this.deleteModel(this.currentModelInstance);
+        }
+
         this.currentModelInstance = object;
         this.scene.add(object);
       },
-      (onerror = (err) => {
-        console.error(err);
-      })
+      undefined,
+      (error) => {
+        console.error('Model loading error:', error);
+      }
     );
   }
 
@@ -140,13 +151,6 @@ export class EngineService implements OnDestroy, AfterViewInit {
     });
 
     this.scene.remove(model);
-  }
-
-  public updateModels(next: Model, prev?: THREE.Group<THREE.Object3DEventMap>) {
-    if (prev) {
-      this.deleteModel(prev);
-    }
-    this.loadModel(next);
   }
 
   public animate(): void {
