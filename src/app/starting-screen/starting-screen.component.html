@@ -1,15 +1,18 @@
 <div class="starting-screen-wrapper">
   <div class="textured-text">
-    <button (click)="nextModel()">Next Model</button>
+    <div class="button-container">
+      <button (click)="previousModel()" class="prevBtn btn">Previous Model</button>
+      <button (click)="nextModel()"class="nextBtn btn">Next Model</button>
+    </div>
     <h1>
-      A story about a<span class="highlighted-text">
+      A website about a<span class="highlighted-text">
         <ng-container *ngFor="let letter of highlightedText; let i = index">
           <span class="bobbing" [style.animationDelay]="(i * 0.1) + 's'"
           >
             {{ letter === ' ' ? '\u00A0' : letter }}
           </span>
         </ng-container>
-      </span>Avocado
+      </span>{{currentModel}}
     </h1>
   </div>
   <div class="diagonal-line-left"></div>

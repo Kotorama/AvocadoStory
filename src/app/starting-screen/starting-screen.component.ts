@@ -11,11 +11,20 @@ import { ModelService } from '../model.service';
   standalone: true,
 })
 export class StartingScreenComponent {
-  constructor(private modelService: ModelService){}
+  public currentModel: string;
+  constructor(private modelService: ModelService) {
+    this.modelService.model$.subscribe((model) => {
+      this.currentModel = model;
+    });
+  }
 
   highlightedText: string[] = ' very cool '.split('');
 
   nextModel() {
     this.modelService.nextModel();
+  }
+
+  previousModel() {
+    this.modelService.previousModel();
   }
 }

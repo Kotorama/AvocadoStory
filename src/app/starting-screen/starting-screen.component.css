@@ -2,6 +2,56 @@ h1 {
   font-family: 'Kabisat';
 }
 
+.btn {
+  background: rgba(0, 0, 0, 0.171);
+  margin: 0 8px;
+  font-family: Kabisat;
+  text-shadow: 2px 2px var(--text-color);
+  box-shadow: 2px 2px var(--text-shadow-color);
+  padding: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  background-image: url('/assets/textures/fire.gif');
+  background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: vibrate 0.5s infinite;
+}
+
+.btn:active {
+  transform: scale(0.95);
+  box-shadow: 1px 1px var(--text-shadow-color);
+}
+
+@keyframes vibrate {
+  0% {
+    transform: translate(0px, 0px);
+  }
+
+  20% {
+    transform: translate(-1px, 1px);
+  }
+
+  40% {
+    transform: translate(1px, -1px);
+  }
+
+  60% {
+    transform: translate(-1px, -1px);
+  }
+
+  80% {
+    transform: translate(1px, 1px);
+  }
+
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
 .starting-screen-wrapper{
   display: flex;
   flex-direction: column;
@@ -72,7 +122,7 @@ h1 {
   bottom: -4%;
   left: -10px;
   width: 100%;
-  height: 15%;
+  height: 18%;
   padding: 50px;
   z-index: 2;
   background: url('/assets/textures/font-texture.avif') repeat center;
