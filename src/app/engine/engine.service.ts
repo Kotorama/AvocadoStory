@@ -1,16 +1,23 @@
-import { ElementRef, Injectable, NgZone, OnDestroy } from '@angular/core';
+import {
+  AfterViewInit,
+  ElementRef,
+  Injectable,
+  NgZone,
+  OnDestroy,
+} from '@angular/core';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/Addons.js';
+import { GLTFLoader, OrbitControls } from 'three/examples/jsm/Addons.js';
 import { Model, ModelService } from '../model.service';
 
 @Injectable({ providedIn: 'root' })
-export class EngineService implements OnDestroy {
+export class EngineService implements OnDestroy, AfterViewInit {
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
   private light: THREE.DirectionalLight;
   private amb_light: THREE.DirectionalLight;
+  private controls: OrbitControls;
 
   private currentModelInstance: THREE.Group<THREE.Object3DEventMap>;
 
@@ -38,6 +45,16 @@ export class EngineService implements OnDestroy {
     }
   }
 
+  public ngAfterViewInit(): void {
+    window.addEventListener('resize', () => this.resize());
+
+    if (document.readyState !== 'loading') {
+      this.render();
+    } else {
+      window.addEventListener('DOMContentLoaded', () => this.render());
+    }
+  }
+
   public createScene(canvas: ElementRef<HTMLCanvasElement>): void {
     this.canvas = canvas.nativeElement;
 
@@ -56,8 +73,16 @@ export class EngineService implements OnDestroy {
       0.1,
       1000
     );
-    this.camera.position.z = 2;
+    this.camera.position.z = 5;
     this.scene.add(this.camera);
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.05;
+
+    this.controls.screenSpacePanning = false;
+    this.controls.minDistance = 1;
+    this.controls.maxDistance = 10;
 
     const amb_light = new THREE.AmbientLight(0x410445, 10);
     amb_light.position.set(0, -2, -2);
@@ -125,28 +150,16 @@ export class EngineService implements OnDestroy {
 
   public animate(): void {
     this.ngZone.runOutsideAngular(() => {
-      if (document.readyState !== 'loading') {
+      const loop = () => {
+        this.controls.update();
         this.render();
-      } else {
-        window.addEventListener('DOMContentLoaded', () => {
-          this.render();
-        });
-      }
-
-      window.addEventListener('resize', () => {
-        this.resize();
-      });
+        this.frameId = requestAnimationFrame(loop);
+      };
+      loop();
     });
   }
 
   public render(): void {
-    this.frameId = requestAnimationFrame(() => {
-      this.render();
-    });
-
-    if (this.currentModelInstance) {
-      this.currentModelInstance.rotation.y += 0.01;
-    }
     this.renderer.render(this.scene, this.camera);
   }
 

@@ -30,9 +30,7 @@ app-root {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 2;
-  touch-action: none;
-    pointer-events: none;
+  z-index: 0;
 
   #renderCanvas {
     width: 100%;
